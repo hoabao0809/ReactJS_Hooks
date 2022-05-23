@@ -1,16 +1,33 @@
-import React, { useRef, useReducer, useState, createContext } from 'react';
-import { Content } from './content/Content';
-import { useContext } from 'react';
-import { ThemeContext } from './ThemeContext';
+import React, { useRef } from 'react';
+import Content from './Content';
+import { useStore } from '../store';
+import { actions } from '../store';
 
 export default function MenuComponent() {
-  const getContext = useContext(ThemeContext);
+  const [state, dispatch] = useStore();
+  const inputRef = useRef();
+
+  const handleClick = () => {
+    dispatch(actions.addJobs(state.job));
+    dispatch(actions.addJob(''));
+    inputRef.current.focus();
+  };
 
   return (
     <>
       <div className="container">
-        <button onClick={getContext.handleToggle}>Toggle</button>
-        <Content />
+        <Content inputRef={inputRef} />
+        <button onClick={handleClick}>Add</button>
+      </div>
+      <div className="container">
+        {state.jobs ??
+          state.jobs.map((item, index) => {
+            return (
+              <>
+                <li key={index}>{item}</li>
+              </>
+            );
+          })}
       </div>
     </>
   );
